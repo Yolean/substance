@@ -283,6 +283,14 @@ Clipboard.Prototype = function() {
   this._pasteHtml = function(html, text) {
     var surface = this.getSurface();
     if (!surface) return;
+    // If you want to combine paste and a command, this seems to be the best solution
+    var context = surface._getContext();
+    var props = { html: html };
+    if(/data\:image/.test(html)) {
+      console.log("Found a data:image component in this HTML tag");
+      context.commandManager.executeCommand("paste-image", props);
+      return;
+    }
     // TODO: the clipboard importer should make sure
     // that the container exists
     var content = this.htmlImporter.importDocument(html);
