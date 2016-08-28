@@ -92,18 +92,18 @@ SwitchTextTypeCommand.Prototype = function() {
     @param {String} textTypeName identifier (e.g. heading1)
   */
   this.execute = function(props, context) {
-    var textType = this.getTextType(context, props.textType);
-    var nodeData = textType.data;
+    //var textType = this.getTextType(context, props.textType.type);
+    //var nodeData = textType.data;
     var surface = context.surfaceManager.getFocusedSurface();
     if (!surface) {
       console.warn('No focused surface. Stopping command execution.');
       return;
     }
     surface.transaction(function(tx, args) {
-      args.data = nodeData;
+      args.data = props.textType;
       return surface.switchType(tx, args);
     });
-    return nodeData;
+    return props.textType;
   };
 };
 

@@ -64,6 +64,7 @@ SwitchTextTypeTool.Prototype = function() {
         var button = $$('button')
             .addClass('se-option sm-'+textType.name)
             .attr('data-type', textType.data.type)
+            .attr('data-level', textType.data.level)
             .append(labelProvider.getLabel(textType.name))
             .on('click', this.handleClick);
         options.append(button);
@@ -103,7 +104,8 @@ SwitchTextTypeTool.Prototype = function() {
     e.preventDefault();
     // Modifies the tool's state so that state.open is undefined, which is nice
     // because it means the dropdown will be closed automatically
-    this.executeCommand(e.currentTarget.dataset.type);
+    var data = { type: e.currentTarget.dataset.type, level: parseInt(e.currentTarget.dataset.level) };
+    this.executeCommand(data);
   };
 
   this.onKeydown = function(event) {
