@@ -1076,7 +1076,7 @@ Surface.Prototype = function() {
       spanParent.normalize();
       // HACK: in FF the DOM selection gets corrupted
       // by the span-insertion above
-      if (platform.isFF) {
+      if (platform.isFF || platform.isIE) {
         this.rerenderDOMSelection();
       }
       return rect;
