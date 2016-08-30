@@ -6,6 +6,7 @@ var substanceGlobals = require('../util/substanceGlobals');
 var documentHelpers = require('../model/documentHelpers');
 var ClipboardImporter = require('./ClipboardImporter');
 var ClipboardExporter = require('./ClipboardExporter');
+var util = require('util');
 
 /**
   The Clipboard is a Component which should be rendered as a sibling component
@@ -116,12 +117,30 @@ Clipboard.Prototype = function() {
   // Works on Safari/Chrome/FF
   this.onPaste = function(event) {
     var clipboardData = event.clipboardData;
-
     var types = {};
     for (var i = 0; i < clipboardData.types.length; i++) {
       types[clipboardData.types[i]] = true;
     }
-    // console.log('onPaste(): received content types', types);
+    console.log('onPaste(): received content types', util.inspect(types));
+      //clipboardData['items'][0].getData(function(data) {
+      if(types['Files']) {
+        var surface = this.getSurface();
+        if (!surface) {
+          console.log('No surface into which to insert image.');
+          return;
+        }
+        // If you want to combine paste and a command, this seems to be the best solution
+        var context = surface._getContext();
+        var file = clipboardData['items'][0].getAsFile();
+        console.log('File: ' + util.inspect(file));
+        var props = { blob: file };
+        context.commandManager.executeCommand("paste-image", props);
+        return;
+      }
+      //});
+    /*for(var i in theItem) {
+      console.log('theItem[' + i + ']: ' + util.inspect(theItem[i]));
+    }*/
 
     event.preventDefault();
     event.stopPropagation();
