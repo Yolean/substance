@@ -83,7 +83,7 @@ TableComponent.Prototype = function() {
 
       console.assert(row.length === ncols, 'row should be complete.');
       for (j = 0; j < ncols; j++) {
-        var cellId = row[j];
+        var cellId = row[j].content;
         var cellEl = this.renderCell($$, cellId);
         cellEl.attr('data-col', j)
           .on('mousedown', this._onCell);
