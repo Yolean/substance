@@ -15,6 +15,7 @@ ImageComponent.Prototype = function() {
     _super.didMount.call(this);
     var node = this.props.node;
     node.on('src:changed', this.rerender, this);
+    node.on('width:changed', this.rerender, this);
     // TODO: we should try to factor this out for reuse
     node.on('upload:started', this.onUploadStarted, this);
     node.on('upload:progress', this.onUploadProgress, this);
@@ -34,6 +35,7 @@ ImageComponent.Prototype = function() {
     el.append(
       $$('img').attr({
         src: this.props.node.src,
+        width: this.props.node.width,
       }).ref('image')
     );
 
