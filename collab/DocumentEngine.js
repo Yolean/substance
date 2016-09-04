@@ -20,7 +20,8 @@ function DocumentEngine(config) {
   this.snapshotEngine = config.snapshotEngine || new SnapshotEngine({
     configurator: this.configurator,
     documentStore: this.documentStore,
-    changeStore: this.changeStore
+    changeStore: this.changeStore,
+    snapshotStore: config.snapshotStore
   });
 }
 
