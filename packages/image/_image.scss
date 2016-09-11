@@ -20,4 +20,12 @@
     top: -1000px;
     left: -1000px;
   }
+
+
+.sc-resize-image-tool {
+  > input {
+    position: fixed;
+    top: -1000px;
+    left: -1000px;
+  }
 }

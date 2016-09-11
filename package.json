@@ -4,7 +4,7 @@
   "description": "",
   "repository": {
     "type": "git",
-    "url": "https://github.com/substance/substance.git"
+    "url": "https://github.com/yolean/substance.git"
   },
   "engines": {
     "node": ">=0.11"

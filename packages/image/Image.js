@@ -11,6 +11,7 @@ DocumentNode.extend(Image);
 Image.define({
   type: "image",
   src: { type: "string", default: "http://" },
+  width: { type: "string", default: "100%" },
   previewSrc: { type: "string", optional: true }
 });
 
