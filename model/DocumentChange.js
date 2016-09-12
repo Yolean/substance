@@ -221,7 +221,11 @@ DocumentChange.Prototype = function() {
       // before state
       before: clone(this.before),
       ops: map(this.ops, function(op) {
-        return op.toJSON();
+        if(op) {
+          return op.toJSON();
+        } else {
+          return {};
+        }
       }),
       info: this.info,
       // after state
