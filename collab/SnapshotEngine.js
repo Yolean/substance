@@ -86,7 +86,8 @@ SnapshotEngine.Prototype = function() {
       // We add the docRecord to the args object
       args.docRecord = docRecord;
 
-      if (this.snapshotStore && args.version !== 0) {
+      // Johan removed a requirement for version not being zero because it made little sense.
+      if (this.snapshotStore) {
         this._computeSnapshotSmart(args, cb);
       } else {
         this._computeSnapshotDumb(args, cb);

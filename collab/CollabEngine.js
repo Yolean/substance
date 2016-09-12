@@ -145,7 +145,7 @@ CollabEngine.Prototype = function() {
       } else if (serverVersion > args.version) { // Client changes need to be rebased to latest serverVersion
         this._syncRB(args, cb);
       } else {
-        cb(new Err('InvalidVersionError', {
+        cb(new Err('InvalidVersionError Client version greater(' + args.version + ') than server version ' + serverVersion, {
           message: 'Client version greater than server version'
         }));
       }
