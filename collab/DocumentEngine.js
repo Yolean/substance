@@ -67,25 +67,6 @@ DocumentEngine.Prototype = function() {
         }));
       }
 
-      // Johan: Otherwise things fall apart real bad.
-      var dummyChange = new ObjectOperation({type: "NOP", ops: []});
-       this.changeStore.addChange({
-         documentId: docRecord.documentId,
-         change: dummyChange
-       }, function(err) {
-         if (err) {
-           return cb(new Err('CreateError', {
-             cause: err
-           }));
-         }
-         var converter = new JSONConverter();
-         cb(null, {
-           documentId: docRecord.documentId,
-           data: converter.exportDocument(doc),
-           version: 1
-         });
-      });
-
       var converter = new JSONConverter();
       cb(null, {
         documentId: docRecord.documentId,
