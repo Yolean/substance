@@ -58,57 +58,8 @@ ImageCommand.Prototype = function() {
     var items = files.map(function(file) {
       var type = "link";
       var node = undefined;
-      if(/\.PDF/i.test(file.name)) {
-        type = "link";
-        var textlength = file.name.length;
-        //node = snippet.create({ type: "link", title: file.name, path: path, startOffset: sel.startOffset, endOffset: (sel.startOffset+textlength) });
-        //node = snippet.create({ type: "text" });
-        sel.endOffset = sel.endOffset + textlength;
-        documentSession.setSelection(sel);
-        surface.transaction(function(tx, args) {
-          args.text = file.name;
-          surface.paste(tx, args);
-          //snippet.show(node); // without this, no node.id.
-
-          /*tx.before.selection = sel;
-          paste(tx, {
-            selection: sel,
-            containerId: surface.getContainerId(),
-            doc: snippet
-          });*/
-        });
-
-        var props = { mode: "create" };
-        var commandManager = surface._getContext().commandManager;
-        var info = commandManager.executeCommand("link", props);
-
-        var nodeId = info.anno.id;
-        var node = doc.get(nodeId);
-
-        node.emit('upload:started');
-        var channel = fileClient.uploadFile(file, function(err, url) {
-          if (err) {
-            url = "error";
-          }
-          // get the node again to make sure it still exists
-          node = doc.get(nodeId);
-          if (node) {
-            node.emit('upload:finished');
-            console.log("upload:finished for PDF insert.");
-            documentSession.transaction(function(tx) {
-              console.log("Setting url to " + url + " for " + nodeId);
-              tx.set([nodeId, 'url'], url);
-            });
-          }
-        });
-        channel.on('progress', function(progress) {
-          // console.log('Progress', progress);
-          node.emit('upload:progress', progress);
-        });
-        
-        return {
-          status: 'file-upload-process-started'
-        };
+      if((file.size/(1024*1024)) > 20) {
+        Alertify.log.error("Can't upload files larger than 20 MB.");
       } else if(/\.PNG/i.test(file.name) || /\.JPG/i.test(file.name)) {
         type = "image";
         node = snippet.create({ type: "image" });
@@ -144,6 +95,52 @@ ImageCommand.Prototype = function() {
           node.emit('upload:progress', progress);
         });
 
+        return {
+          status: 'file-upload-process-started'
+        };
+      } else { // No preview attempted, just upload and link generation
+        type = "link";
+        var textlength = file.name.length;
+        surface.transaction(function(tx, args) {
+          args.text = file.name;
+          surface.paste(tx, args);
+        });
+        sel.endOffset = sel.endOffset + textlength;
+        documentSession.setSelection(sel);
+
+        var props = { mode: "create" };
+        var commandManager = surface._getContext().commandManager;
+        var info = commandManager.executeCommand("link", props);
+
+        // Stop the automated selection of text now that link has been created
+        sel.endOffset = sel.startOffset;
+        documentSession.setSelection(sel);
+        console.log("Just set selection to " + JSON.stringify(sel) + " after link creation.");
+
+        var nodeId = info.anno.id;
+        var node = doc.get(nodeId);
+
+        node.emit('upload:started');
+        var channel = fileClient.uploadFile(file, function(err, url) {
+          if (err) {
+            url = "error";
+          }
+          // get the node again to make sure it still exists
+          node = doc.get(nodeId);
+          if (node) {
+            node.emit('upload:finished');
+            console.log("upload:finished for PDF insert.");
+            documentSession.transaction(function(tx) {
+              console.log("Setting url to " + url + " for " + nodeId);
+              tx.set([nodeId, 'url'], url);
+            });
+          }
+        });
+        channel.on('progress', function(progress) {
+          // console.log('Progress', progress);
+          node.emit('upload:progress', progress);
+        });
+        
         return {
           status: 'file-upload-process-started'
         };
