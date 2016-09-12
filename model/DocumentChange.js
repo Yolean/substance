@@ -265,11 +265,14 @@ DocumentChange.deserialize = function(str) {
 DocumentChange.fromJSON = function(data) {
   // Don't write to original object on deserialization
   var change = cloneDeep(data);
-  change.ops = data.ops.map(function(opData) {
-    return ObjectOperation.fromJSON(opData);
-  });
-  change.before.selection = Selection.fromJSON(data.before.selection);
-  change.after.selection = Selection.fromJSON(data.after.selection);
+  console.log("Changes from JSON: " + JSON.stringify(data));
+  if(data.ops) {
+    change.ops = data.ops.map(function(opData) {
+      return ObjectOperation.fromJSON(opData);
+    });
+    change.before.selection = Selection.fromJSON(data.before.selection);
+    change.after.selection = Selection.fromJSON(data.after.selection);
+  }
   return new DocumentChange(change);
 };
 
